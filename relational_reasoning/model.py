@@ -178,10 +178,10 @@ def RRN(final_img_dims, q_input_len, output_size,
     cnn_model = densenet.DenseNet(final_img_dims, depth=dn_depth, 
                                     nb_dense_block=dn_num_blocks, 
                                     nb_layers_per_block=dn_block_sizes,
-                                    bottleneck=False, reduction=0.5, 
+                                    bottleneck=False, reduction=0.5,        # No bottle to improve gradient flow 
                                     growth_rate=dn_growth_rate, 
                                     final_dropout=0.0, include_top=False)                                        
-
+    
     cnn_features = cnn_model(final_image_input)
 
     
@@ -390,18 +390,18 @@ if __name__ == '__main__':
         final_img_dims = (32, 128)
         max_seq_len = 32
         
-        cnn_block_sizes = [6, 8, 10, 6, 4]
+        cnn_block_sizes = [8, 10, 12, 8, 6]
         dn_growth_rate = 12
         
-        embedding_dim = 128
-        rnn_units = 80       # Should be between 0.5 to 0.75 of the size of CNN output channels
+        embedding_dim = 160
+        rnn_units = 112       # Should be between 0.5 to 0.75 of the size of CNN output channels
 
-        rel_MLP_layers = 4
-        rel_MLP_units = 192
+        rel_MLP_layers = 5
+        rel_MLP_units = 256
 
-        final_MLP_layers = 4
-        final_MLP_units = 128
-        final_MLP_dropout = 0.3
+        final_MLP_layers = 6
+        final_MLP_units = 192
+        final_MLP_dropout = 0.1
 
         
         # Get training and test data
@@ -434,16 +434,17 @@ if __name__ == '__main__':
                                 {'num_layers': final_MLP_layers, 'units': final_MLP_units},
                             dropout_rate=final_MLP_dropout)
         rr_model.summary()
-        
+
         
         # Begin training and evaluation
         epochs = 75
         batch_size = 128
-        init_lr_val = 0.15
+        init_lr_val = 0.2
         
         callbacks = [ cb_utils.CosineLRScheduler(init_lr_val, epochs) ]
-        multi_input_gen = gen_utils.MultiInputImageGenerator(train_imgs, [train_word_seqs], 
-                                                        train_labels, batch_size=batch_size)
+        multi_input_gen = cornell_nlvr_utils.CornellDataAugmentor(train_imgs, train_word_seqs, 
+                                                                    word_index, train_labels, 
+                                                                    batch_size=batch_size)
         
         rr_model.compile(optimizer=SGD(lr=init_lr_val), loss='categorical_crossentropy', 
                             metrics=['accuracy'])
