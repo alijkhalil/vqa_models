@@ -15,7 +15,7 @@ incorporates elements from Deepmind's related paper on "Visual Interaction Netwo
 
 # Import statements
 import sys, warnings
-import math
+import math, os
 import pickle
 
 import numpy as np
@@ -30,16 +30,18 @@ from keras.layers.convolutional import Conv2D, MaxPooling2D, AveragePooling2D
 from keras.layers.normalization import BatchNormalization, regularizers
 from keras.optimizers import Adam, SGD
 
-sys.path.append("..")
-from state_of_art_cnns.densenet import densenet
+dir_path = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(dir_path + "/../../")
 
-from dl_utilities.general import general as gen_utils
-from dl_utilities.callbacks import callback_utils as cb_utils
-from dl_utilities.datasets import dataset_utils as ds_utils
-from dl_utilities.layers import general as dl_layers
-from dl_utilities.vqa import create_artificial_ds_utils as create_ds_utils
-from dl_utilities.vqa import cornell_nlvr_utils as cornell_nlvr_utils
-from dl_utilities.nlp import word_vec_utils as wv_utils
+from state_of_art_cnns.densenet import densenet  # Requires 'sys.path' call above
+
+from dl_utilities.general import general as gen_utils  # Requires 'sys.path' call above
+from dl_utilities.callbacks import callback_utils as cb_utils  # Requires 'sys.path' call above
+from dl_utilities.datasets import dataset_utils as ds_utils  # Requires 'sys.path' call above
+from dl_utilities.layers import general as dl_layers  # Requires 'sys.path' call above
+from dl_utilities.vqa import create_artificial_ds_utils as create_ds_utils  # Requires 'sys.path' call above
+from dl_utilities.vqa import cornell_nlvr_utils as cornell_nlvr_utils  # Requires 'sys.path' call above
+from dl_utilities.nlp import word_vec_utils as wv_utils  # Requires 'sys.path' call above
 
 
 
